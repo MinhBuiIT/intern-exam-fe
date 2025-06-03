@@ -14,7 +14,16 @@
           @submit.prevent="handleSubmit"
         >
           <VaInput
+            type="text"
+            label="Tên đầy đủ"
+            v-model="formData.password"
+            :error="Boolean(passwordError)"
+            :error-messages="passwordError"
+            immediateValidation
+          />
+          <VaInput
             label="Tên đăng nhập"
+            class="mt-3"
             v-model="formData.username"
             :error="Boolean(usernameError)"
             :error-messages="usernameError"
@@ -30,7 +39,21 @@
             :error-messages="passwordError"
             immediateValidation
           />
-          <VaCheckbox class="mt-3 mb-2" label="Bạn là Admin" v-model="formData.isAdmin" />
+          <VaRadio
+            v-model="formData.gender"
+            :options="[
+              {
+                text: 'Nam',
+                value: true,
+              },
+              {
+                text: 'Nữ',
+                value: false,
+              },
+            ]"
+            value-by="value"
+            class="mt-3"
+          />
           <div class="mt-3">
             <VaButton type="submit"> Đăng ký </VaButton>
           </div>
@@ -48,22 +71,32 @@ import AuthLayout from '@/layout/AuthLayout.vue'
 import { reactive, ref } from 'vue'
 
 interface FormData {
+  fullName: string
   username: string
   password: string
-  isAdmin: boolean
+  gender: boolean
 }
 
 const formData: FormData = reactive({
+  fullName: '',
   username: '',
   password: '',
-  isAdmin: false,
+  gender: true, // true for male, false for female
 })
 
 const usernameError = ref<string>('')
 const passwordError = ref<string>('')
+const fullNameError = ref<string>('')
 
 const handleSubmit = () => {
-  const { username, password, isAdmin } = formData
+  const { username, password, fullName } = formData
+
+  if (!fullName) {
+    fullNameError.value = 'Tên đầy đủ không được để trống'
+    return
+  } else {
+    fullNameError.value = ''
+  }
   if (!username) {
     usernameError.value = 'Tên đăng nhập không được để trống'
     return
@@ -79,8 +112,9 @@ const handleSubmit = () => {
   } else {
     passwordError.value = ''
   }
+
   // Handle form submission logic here
-  console.log('Form submitted:', { username, password, isAdmin })
+  console.log('Form submitted:', { username, password })
 }
 </script>
 <style scoped>
