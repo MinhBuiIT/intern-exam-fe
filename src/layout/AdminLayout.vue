@@ -15,7 +15,7 @@
           active-color="primary"
         >
           <VaSidebarItem v-for="(item, index) in items" :key="index" :active="item.active">
-            <VaSidebarItemContent active>
+            <VaSidebarItemContent @click="navigateTo(item.name)">
               <VaIcon :name="item.icon" />
               <VaSidebarItemTitle>{{ item.title }}</VaSidebarItemTitle>
             </VaSidebarItemContent>
@@ -39,24 +39,35 @@
 <script setup lang="ts">
 import HeaderLogo from '@/components/HeaderLogo.vue'
 import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+console.log('router', router.currentRoute.value.name)
 
 const items = reactive([
   {
     title: 'Quản lý ngân hàng câu hỏi',
     icon: 'home',
-    active: true,
+    name: 'admin-questions',
+    active: router.currentRoute.value.name === 'admin-questions',
   },
   {
     title: 'Quản lý bài thi',
     icon: 'school',
-    active: false,
+    name: 'exam-management',
+    active: router.currentRoute.value.name === 'exam-management',
   },
   {
     title: 'Quản lý loại câu hỏi',
     icon: 'star',
-    active: false,
+    name: 'question-type-management',
+    active: router.currentRoute.value.name === 'question-type-management',
   },
 ])
+
+const navigateTo = (name: string) => {
+  router.push({ name })
+}
 </script>
 <style scoped>
 .admin-layout-header {

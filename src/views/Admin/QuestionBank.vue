@@ -1,10 +1,10 @@
 <template>
   <AdminLayout>
     <div class="qbank-container">
-      <h2 class="qbank-heading2">
-        <VaIcon name="va-arrow-right" size="30px" />
+      <HeadingAdmin>
         <span>Ngân hàng câu hỏi</span>
-      </h2>
+      </HeadingAdmin>
+
       <div class="qbank-search">
         <VaForm
           :style="{ display: 'flex', 'align-items': 'center', gap: '10px' }"
@@ -27,6 +27,9 @@
           </div>
           <VaButton color="primary">Tìm kiếm</VaButton>
         </VaForm>
+      </div>
+      <div class="question-bank-actions">
+        <VaButton color="secondary" @click="openModalAdd">Thêm câu hỏi</VaButton>
       </div>
       <!-- Question Bank Table -->
       <div class="table-container">
@@ -78,10 +81,13 @@
       </div>
     </div>
     <QuestionModal v-model="showModal" :questionId="questionId" />
+    <AddQuestionModal v-model="showModalAdd" />
   </AdminLayout>
 </template>
 
 <script setup lang="ts">
+import AddQuestionModal from '@/components/AddQuestionModal.vue'
+import HeadingAdmin from '@/components/HeadingAdmin.vue'
 import QuestionModal from '@/components/QuestionModal.vue'
 import AdminLayout from '@/layout/AdminLayout.vue'
 import { formatDate } from '@/utils/index.ts'
@@ -139,6 +145,11 @@ const openModal = (id: number) => {
   showModal.value = !showModal.value
   questionId.value = id
 }
+
+const showModalAdd = ref(false)
+const openModalAdd = () => {
+  showModalAdd.value = !showModalAdd.value
+}
 </script>
 
 <style scoped>
@@ -149,13 +160,7 @@ const openModal = (id: number) => {
   margin: 3px 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.qbank-heading2 {
-  font-size: 24px;
-  font-weight: 600;
-  color: #111827;
-  display: flex;
-  align-items: center;
-}
+
 .qbank-search {
   margin-top: 20px;
   display: flex;
@@ -282,5 +287,13 @@ const openModal = (id: number) => {
   margin: 0 16px;
   font-size: 14px;
   color: #4b5563;
+}
+.question-bank-actions {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+}
+.question-bank-actions button {
+  color: #fff !important;
 }
 </style>
