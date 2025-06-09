@@ -1,4 +1,5 @@
 import AddExam from '@/views/Admin/AddExam.vue'
+import ExamDetail from '@/views/Admin/ExamDetail.vue'
 import ExamManagement from '@/views/Admin/ExamManagement.vue'
 import AdminQuestionsPage from '@/views/Admin/QuestionBank.vue'
 import LoginPage from '@/views/LoginPage.vue'
@@ -32,6 +33,11 @@ const router = createRouter({
       path: '/admin/exams/add',
       name: 'add-exam',
       component: AddExam,
+    },
+    {
+      path: '/admin/exams/:examId',
+      name: 'exam-detail',
+      component: ExamDetail,
     },
   ],
 })

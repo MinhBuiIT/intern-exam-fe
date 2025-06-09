@@ -10,10 +10,20 @@
               label="Tiêu đề bài thi"
               placeholder="Nhập tiêu đề bài thi"
               class="w-full"
+              :error="Boolean(examTitleError)"
+              :error-messages="examTitleError"
+              immediateValidation
             />
           </div>
           <div class="form-group">
-            <VaTextarea v-model="examFormData.description" label="Mô tả bài thi" class="w-full" />
+            <VaTextarea
+              v-model="examFormData.description"
+              label="Mô tả bài thi"
+              class="w-full textarea"
+              :error="Boolean(examDescriptionError)"
+              :error-messages="examDescriptionError"
+              immediateValidation
+            />
           </div>
           <div class="form-group" :style="{ display: 'flex', gap: '50px' }">
             <VaInput
@@ -81,7 +91,7 @@
               <tbody>
                 <tr v-for="(question, index) in questionPickedExam" :key="index">
                   <td>{{ index + 1 }}</td>
-                  <td class="question-content">{{ question.content }}</td>
+                  <td class="question-content">{{ question.text }}</td>
                   <td>
                     <span
                       class="category-tag"
@@ -104,7 +114,10 @@
         </form>
       </div>
     </div>
-    <QuestionListModal v-model="showModal" />
+    <QuestionListModal
+      v-model="showModal"
+      @pick-questions="(questions) => handleReceivePickQuestion(questions)"
+    />
   </AdminLayout>
 </template>
 <script setup lang="ts">
@@ -116,6 +129,7 @@ import { datePlusDay, mergeDateTime } from '@/utils'
 import { reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import * as XLSX from 'xlsx'
+import type { IPickQuestion } from '../../@types/question.type'
 import { formatStringText } from '../../utils'
 
 const router = useRouter()
@@ -128,6 +142,7 @@ watch(selectedOptionPickQuestions, (newValue) => {
     showModal.value = false
   }
 })
+
 const examFormData = reactive({
   title: '',
   description: '',
@@ -135,6 +150,7 @@ const examFormData = reactive({
   scoreQuestion: 100,
   questions: [],
 })
+
 const fileUpload = ref([])
 const questionPickedExam = ref<IQuestionItemImport[]>([])
 const startedAt = ref({
@@ -145,6 +161,19 @@ const expires = ref({
   date: datePlusDay(new Date(), 7).toISOString(),
   time: new Date(),
 })
+const examTitleError = ref('')
+const examDescriptionError = ref('')
+
+const checkValidation = (key: 'examTitle' | 'examDescription') => {
+  if (key === 'examTitle') {
+    examTitleError.value = examFormData.title ? '' : 'Tiêu đề bài thi không được để trống'
+  } else if (key === 'examDescription') {
+    examDescriptionError.value = examFormData.description ? '' : 'Mô tả bài thi không được để trống'
+  }
+}
+
+//Methods
+
 //Xử lý dữ liệu từ file Excel
 const handleFileUpload = () => {
   const file = fileUpload.value[0]
@@ -167,7 +196,7 @@ const handleFileUpload = () => {
     questionPickedExam.value = questionsExcel.map((item) => {
       const correctAnswer = item['Correct Answer'].split(' ')
       const answers: IQuestionItemImport['answers'] = []
-      Object.keys(item).forEach((key) => {
+      Object.keys(item).forEach((key: string) => {
         if (key.startsWith('Option')) {
           const keyAnswer = key.split(' ')[1] // Extract 'Option A' -> 'A'
           answers.push({
@@ -178,7 +207,7 @@ const handleFileUpload = () => {
       })
 
       const question: IQuestionItemImport = {
-        content: formatStringText(item['Content'].toString()),
+        text: formatStringText(item['Content'].toString()),
         category: formatStringText(item['Category']),
         explain: formatStringText(item['Explain']),
         answers,
@@ -196,22 +225,49 @@ const handleFileUpload = () => {
 
 const handleSubmit = () => {
   // Handle form submission logic here
-  console.log('Exam Created:', examFormData)
-  console.log('Selected Questions:', questionPickedExam.value)
+  checkValidation('examTitle')
+  checkValidation('examDescription')
+  if (!examTitleError.value && !examDescriptionError.value) {
+    const startedDateTime = mergeDateTime(
+      new Date(startedAt.value.date),
+      new Date(startedAt.value.time),
+    )
+    const expiresDateTime = mergeDateTime(
+      new Date(expires.value.date),
+      new Date(expires.value.time),
+    )
 
-  const startedDateTime = mergeDateTime(
-    new Date(startedAt.value.date),
-    new Date(startedAt.value.time),
-  )
-  const expiresDateTime = mergeDateTime(new Date(expires.value.date), new Date(expires.value.time))
-  console.log('Started At:', startedDateTime)
-  console.log('Expires At:', expiresDateTime)
+    const questionData = questionPickedExam.value
+      .filter((q) => q.isPick)
+      .map((question) => {
+        return question.text // thay thế bằng id khi call api
+      })
+    const examData = {
+      ...examFormData,
+      startedAt: startedDateTime,
+      expires: expiresDateTime,
+      questions: questionData,
+    }
+    console.log('Exam Data:', examData)
+  }
 
   // Reset form after submission
 }
 const handleCancel = () => {
   // Reset form or navigate back
   router.go(-1)
+}
+
+const handleReceivePickQuestion = (questions: IPickQuestion[]) => {
+  questionPickedExam.value = questions.map((question) => ({
+    id: question.id,
+    text: question.text,
+    category: question.category,
+    explain: question.explain,
+    answers: [],
+    type: question.type,
+    isPick: true, //
+  }))
 }
 </script>
 <style scoped>

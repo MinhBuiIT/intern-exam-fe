@@ -22,7 +22,14 @@
                   <p>Thời gian làm bài: 60 phút</p>
                   <p>Hết hạn: 10:00 15/06/2025</p>
                 </div>
-                <VaButton color="info" gradient class="exam-btn"> Xem chi tiết </VaButton>
+                <VaButton
+                  color="info"
+                  gradient
+                  class="exam-btn"
+                  @click="navigateToExamDetail('12345')"
+                >
+                  Xem chi tiết
+                </VaButton>
               </div>
             </div>
             <div class="flex flex-col md3">
@@ -82,6 +89,9 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const navigateToAddExam = () => {
   router.push({ name: 'add-exam' })
+}
+const navigateToExamDetail = (examId: string) => {
+  router.push({ name: 'exam-detail', params: { examId } })
 }
 </script>
 <style lang="scss" scoped>

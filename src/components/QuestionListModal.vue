@@ -37,14 +37,14 @@
         <tbody>
           <tr v-for="(question, index) in questions" :key="question.id">
             <td>{{ index + 1 }}</td>
-            <td class="question-content">{{ question.text }}</td>
+            <td class="question-content" title="{{ question.text }}">{{ question.text }}</td>
             <td>
               <span class="category-tag" :class="`category-${question.category.toLowerCase()}`">
                 {{ question.category }}
               </span>
             </td>
             <td>
-              <div><VaCheckbox :v-model="true" /></div>
+              <div><VaCheckbox v-model="question.pick" /></div>
             </td>
           </tr>
         </tbody>
@@ -69,6 +69,10 @@
         </button>
       </div>
     </div>
+    <div :style="{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px', gap: '10px' }">
+      <VaButton color="primary" @click="handleConfirmPickQuestions">Xác Nhận</VaButton>
+      <VaButton preset="primary" border-color="primary" @click="isVisible = false">Hủy</VaButton>
+    </div>
   </VaModal>
 </template>
 <script setup lang="ts">
@@ -84,30 +88,42 @@ const questions = ref([
     text: 'Câu hỏi về kiến thức cơ bản của hệ điều hành?',
     category: 'NB',
     createdAt: '2025-05-30T10:30:00',
+    type: 'SINGLE',
+    explain: '',
+    pick: false,
   },
   {
     id: 2,
     text: 'Hãy mô tả cách thức hoạt động của thuật toán sắp xếp nhanh (Quick Sort)?',
     category: 'TH',
     createdAt: '2025-05-29T14:20:00',
+    explain: '',
+    type: 'MULTIPLE',
+    pick: false,
   },
   {
     id: 3,
     text: 'Giải thích nguyên lý hoạt động của mô hình OSI trong mạng máy tính?',
     category: 'VD',
     createdAt: '2025-05-28T09:15:00',
+    type: 'SINGLE',
+    explain: '',
+    pick: false,
   },
   {
     id: 4,
     text: 'Phân tích ưu nhược điểm của các phương pháp phát hiện tấn công mạng hiện đại?',
     category: 'VDC',
     createdAt: '2025-05-27T16:45:00',
+    type: 'MULTIPLE',
+    explain: '',
+    pick: false,
   },
 ])
 const props = defineProps<{
   modelValue: boolean
 }>()
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'pickQuestions'])
 
 const isVisible = computed({
   get: () => props.modelValue,
@@ -126,6 +142,12 @@ const changePage = (page: number) => {
 const handleSubmitSearch = () => {
   // Handle search logic here
   console.log('Search submitted:', searchFormData)
+}
+
+const handleConfirmPickQuestions = () => {
+  const selectedQuestions = questions.value.filter((q) => q.pick)
+  emit('pickQuestions', selectedQuestions)
+  isVisible.value = false
 }
 </script>
 

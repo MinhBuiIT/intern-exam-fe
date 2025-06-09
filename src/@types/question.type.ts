@@ -7,7 +7,7 @@ export interface IQuestionItem {
 }
 
 export interface IQuestionItemImport {
-  content: string
+  text: string
   category: string
   explain: string
   type: 'SINGLE' | 'MULTIPLE'
@@ -25,4 +25,14 @@ export interface IQuestionFormatExecl {
   'Option D'?: string
   'Option E'?: string
   'Correct Answer': string
+}
+
+export interface IPickQuestion {
+  id: number
+  text: string
+  category: string
+  createdAt: string
+  pick: boolean
+  type: 'SINGLE' | 'MULTIPLE'
+  explain: string
 }
