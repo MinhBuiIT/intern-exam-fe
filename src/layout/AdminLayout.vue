@@ -7,7 +7,7 @@
         <p>@admin</p>
       </div>
     </header>
-    <div :style="{ display: 'flex', height: '92vh' }">
+    <div :style="{ display: 'flex', minHeight: '92vh' }">
       <div>
         <VaSidebar
           color="#fff"

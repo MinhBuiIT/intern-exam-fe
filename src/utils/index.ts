@@ -22,3 +22,7 @@ export const mergeDateTime = (date: Date, time: Date) => {
   mergedDate.setHours(hours, minutes, 0, 0)
   return mergedDate
 }
+
+export const formatStringText = (text: string) => {
+  return text.replace(/\t/g, '').trim()
+}
