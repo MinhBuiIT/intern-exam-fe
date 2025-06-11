@@ -7,8 +7,8 @@
         <p>@admin</p>
       </div>
     </header>
-    <div :style="{ display: 'flex', minHeight: '92vh' }">
-      <div>
+    <div class="admin-layout">
+      <div class="admin-sidebar">
         <VaSidebar
           color="#fff"
           :style="{ 'box-shadow': '2px 6px 4px rgba(0, 0, 0, 0.08)' }"
@@ -21,8 +21,6 @@
             </VaSidebarItemContent>
           </VaSidebarItem>
 
-          <VaSpacer />
-
           <VaSidebarItem>
             <VaSidebarItemContent>
               <VaIcon name="logout" />
@@ -31,8 +29,9 @@
           </VaSidebarItem>
         </VaSidebar>
       </div>
-
-      <slot></slot>
+      <div class="admin-layout-content">
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -81,6 +80,10 @@ const navigateTo = (name: string) => {
   padding: 0 60px;
   box-shadow: 2px 6px 4px rgba(0, 0, 0, 0.08);
   z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 .admin-layout-heading3 {
   font-size: 24px;
@@ -91,5 +94,29 @@ const navigateTo = (name: string) => {
   font-size: 16px;
   color: #6b7280;
   margin: 0;
+}
+.admin-sidebar {
+  position: fixed;
+  top: 8vh;
+  left: 0;
+  width: 250px;
+  height: 100%;
+}
+
+.admin-layout {
+  display: flex;
+  height: calc(100vh - 8vh);
+}
+.admin-layout-content {
+  padding: 20px;
+  background-color: #fff;
+  margin-left: 250px; /* Adjust based on sidebar width */
+  width: calc(100% - 250px);
+  overflow-y: auto;
+  position: relative;
+  top: 8vh; /* Adjust to account for fixed header */
+  height: calc(100vh - 8vh);
+  box-sizing: border-box;
+  border-left: 1px solid #e5e7eb; /* Light gray border */
 }
 </style>

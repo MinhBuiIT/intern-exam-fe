@@ -151,6 +151,12 @@
           </div>
         </div>
       </div>
+
+      <div class="exam-detail-actions">
+        <VaButton preset="primary" class="mr-6 mb-2" @click="handleNavigateToUserManagement">
+          Quản lý người dùng
+        </VaButton>
+      </div>
     </div>
   </AdminLayout>
 </template>
@@ -161,6 +167,10 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
+const handleNavigateToUserManagement = () => {
+  router.push({ name: 'exam-users', params: { examId: router.currentRoute.value.params.examId } })
+}
+
 console.log('Exam Id', router.currentRoute.value.params.examId)
 </script>
 <style scoped>
@@ -168,7 +178,6 @@ console.log('Exam Id', router.currentRoute.value.params.examId)
   width: 100%;
   padding: 20px 30px;
   background-color: white;
-  margin: 3px 0;
   position: relative;
 }
 .exam-detail-content {
@@ -237,5 +246,11 @@ console.log('Exam Id', router.currentRoute.value.params.examId)
 }
 .exam-detail-answer.incorrect {
   background-color: #f3f4f6;
+}
+.exam-detail-actions {
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  display: flex;
 }
 </style>

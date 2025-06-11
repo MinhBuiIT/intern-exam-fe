@@ -2,6 +2,8 @@ import AddExam from '@/views/Admin/AddExam.vue'
 import ExamDetail from '@/views/Admin/ExamDetail.vue'
 import ExamManagement from '@/views/Admin/ExamManagement.vue'
 import AdminQuestionsPage from '@/views/Admin/QuestionBank.vue'
+import UserExamDetail from '@/views/Admin/UserExamDetail.vue'
+import UserExamManagement from '@/views/Admin/UserExamManagement.vue'
 import LoginPage from '@/views/LoginPage.vue'
 import RegisterPage from '@/views/RegisterPage.vue'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -38,6 +40,16 @@ const router = createRouter({
       path: '/admin/exams/:examId',
       name: 'exam-detail',
       component: ExamDetail,
+    },
+    {
+      path: '/admin/exams/:examId/users',
+      name: 'exam-users',
+      component: UserExamManagement,
+    },
+    {
+      path: '/admin/exams/:examId/users/:userId',
+      name: 'user-exam-detail',
+      component: UserExamDetail,
     },
   ],
 })
