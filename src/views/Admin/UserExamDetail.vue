@@ -93,7 +93,9 @@
 
                 <td>
                   <div class="action-buttons">
-                    <button class="action-btn view-btn">Xem chi tiết</button>
+                    <button class="action-btn view-btn" @click="navigateExamAttemptResult(10)">
+                      Xem chi tiết
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -109,8 +111,10 @@
 import HeadingAdmin from '@/components/HeadingAdmin.vue'
 import AdminLayout from '@/layout/AdminLayout.vue'
 
+const router = useRouter()
 //mock data for user attempts
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 const attempts = ref([
   { id: 1, time: '2023-10-01 10:00', score: 85, result: 'Passed' },
   { id: 2, time: '2023-10-02 11:00', score: 90, result: 'Passed' },
@@ -120,6 +124,16 @@ const attempts = ref([
   { id: 6, time: '2023-10-06 15:00', score: 95, result: 'Passed' },
   { id: 7, time: '2023-10-07 16:00', score: 88, result: 'Passed' },
 ])
+
+const navigateExamAttemptResult = (resultId: number) => {
+  router.push({
+    name: 'exam-result',
+    params: { resultId: resultId },
+  })
+  // Navigate to the exam attempt detail page
+  // This is a placeholder function, implement your navigation logic here
+  console.log('Navigate to exam attempt detail for ID:', resultId)
+}
 </script>
 
 <style scoped>
